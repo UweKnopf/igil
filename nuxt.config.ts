@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@nuxt/eslint'
   ],
+  css: ['~/assets/css/main.css'],
   hub: {
     //Config options for hub
   },
