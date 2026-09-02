@@ -7,15 +7,21 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.2",
+    "@electric-sql/pglite": "^0.5.8",
     "@nuxt/devtools": "^3.4.2",
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/fonts": "^0.14.0",
     "@nuxt/ui": "^4.11.0",
     "@nuxthub/core": "^0.10.8",
     "@nuxtjs/seo": "^5.3.14",
+    "@takumi-rs/core": "^2.13.3",
     "@tiptap/core": "^3.30.5",
     "@tiptap/extension-bubble-menu": "^3.30.5",
     "@tiptap/extension-code": "^3.30.5",
@@ -33,12 +39,31 @@
     "@tiptap/starter-kit": "^3.30.5",
     "@tiptap/suggestion": "^3.30.5",
     "@tiptap/vue-3": "^3.30.5",
+    "better-auth": "^1.7.2",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^1.0.0-rc.5-ab785fc",
     "eslint": "^10.9.1",
     "nuxt": "^4.5.2",
+    "pg": "^8.23.0",
+    "postgres": "^3.4.9",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vite": "^8.2.2",
     "vue": "^3.5.41",
     "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
+    "tsx": "^4.23.13"
+  },
+  "allowScripts": {
+    "vue-demi@0.14.10": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true,
+    "esbuild@0.27.7": true
   }
 }

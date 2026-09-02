@@ -12,5 +12,8 @@ export default defineNuxtConfig({
   ],
   hub: {
     //Config options for hub
+  },
+  runtimeConfig: {
+    databaseUrl: process.env.POSTGRESS_TEST_URL,
   }
 })
