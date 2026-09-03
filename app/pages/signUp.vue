@@ -30,10 +30,6 @@ const fields: AuthFormField[] = [{
   type: 'password',
   placeholder: 'Enter your password',
   required: true
-}, {
-  name: 'remember',
-  label: 'Remember me',
-  type: 'checkbox'
 }]
 
 const providers = [{
