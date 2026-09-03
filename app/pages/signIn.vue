@@ -26,7 +26,8 @@ const fields: AuthFormField[] = [{
 }, {
   name: 'remember',
   label: 'Remember me',
-  type: 'checkbox'
+  type: 'checkbox',
+  defaultValue: false
 }]
 
 const providers = [{
@@ -46,7 +47,8 @@ const providers = [{
 const schema = z.object({
     
   email: z.email('Invalid email'),
-  password: z.string('Password is required').min(8, 'Must be at least 8 characters')
+  password: z.string('Password is required').min(8, 'Must be at least 8 characters'),
+    remember: z.boolean().default(false), //remember to change AuthForm too
 })
 
 type Schema = z.output<typeof schema>
@@ -60,6 +62,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       const { error } = await authClient.signIn.email({
         email: payload.data.email,
         password: payload.data.password,
+        rememberMe: payload.data.remember,
       })
 
       if (error) {
