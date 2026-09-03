@@ -6,9 +6,10 @@ import { authClient } from '~~/lib/auth-client'
 const toast = useToast()
 const errorMessage = ref("")
 const loading = ref(false)
+const route = useRoute()
 
 definePageMeta({
-  middleware: "sign",
+  middleware: 'guest'
 })
 
 const fields: AuthFormField[] = [{
@@ -53,25 +54,46 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
+  function getRedirectPath() {
+  const redirect = route.query.redirect
+
+  if (
+    typeof redirect === 'string' &&
+    redirect.startsWith('/') &&
+    !redirect.startsWith('//')
+  ) {
+    return redirect
+  }
+
+  return '/orgDashboard'
+}
+
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   errorMessage.value = ""
   loading.value = true
 
   try {
     
-      const { error } = await authClient.signIn.email({
-        email: payload.data.email,
-        password: payload.data.password,
-        rememberMe: payload.data.remember,
-      })
+    const { error } = await authClient.signIn.email({
+      email: payload.data.email,
+      password: payload.data.password,
+      rememberMe: payload.data.remember,
+    })
 
-      if (error) {
-        errorMessage.value = error.message ?? "Unable to sign in."
-        return
-      }
+    if (error) {
+      errorMessage.value = error.message ?? "Unable to sign in."
+      return
+    }
 
-      await authClient.getSession()
-      await navigateTo("/orgDashboard")
+    const { data: session, error: sessionError } = await authClient.getSession()
+
+    if (sessionError || !session) {
+      errorMessage.value =
+        'Sign-in succeeded, but we could not confirm your session. Please try again.'
+      return
+    }
+
+    await navigateTo(getRedirectPath())
 
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : "Unexpected error. Please try again."
