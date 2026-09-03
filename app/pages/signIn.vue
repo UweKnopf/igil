@@ -70,7 +70,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         return
       }
 
-      await navigateTo("/dashboard")
+      await authClient.getSession()
+      await navigateTo("/orgDashboard")
 
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : "Unexpected error. Please try again."

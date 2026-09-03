@@ -71,6 +71,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         return
       }
 
+      await authClient.getSession()
       await navigateTo("/dashboard")
 
   } catch (error) {
