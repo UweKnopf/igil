@@ -1,8 +1,7 @@
 <template>
   <UApp>
-    <header>
-      <AppHeader/>
-    </header>
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>  
   </UApp>
 </template>

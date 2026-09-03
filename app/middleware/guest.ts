@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (session) {
     return navigateTo({
-      path: "/orgDashboard",
-    })
+      path: "/orgDashboard", 
+    }, { replace: true }) 
   }
 })

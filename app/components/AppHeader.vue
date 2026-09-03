@@ -30,7 +30,6 @@ const items = computed<NavigationMenuItem[]>(() => [
 <template>
   <UHeader>
     <template #title>
-      <Logo class="h-6 w-auto" />
     </template>
 
     <UNavigationMenu :items="items" />
