@@ -9,7 +9,7 @@ const { data: session } = await authClient.useSession(useFetch)
 
 async function logout() {
   await authClient.signOut()
-  await navigateTo("/auth")
+  await navigateTo("/signIn")
 }
 </script>
 

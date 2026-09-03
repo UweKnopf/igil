@@ -3,9 +3,9 @@ import { authClient } from "../../lib/auth-client"
 export default defineNuxtRouteMiddleware(async (to) => {
   const { data: session } = await authClient.useSession(useFetch)
 
-  if (!session.value) {
+  if (session.value) {
     return navigateTo({
-      path: "/signIn",
+      path: "/dashboard",
       query: { redirect: to.fullPath },
     })
   }

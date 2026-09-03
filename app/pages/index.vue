@@ -4,7 +4,7 @@ import type { ButtonProps } from '@nuxt/ui'
 const links = ref<ButtonProps[]>([
   {
     label: 'Get started',
-    to: '/auth',
+    to: '/signUp',
     
   },
   {
