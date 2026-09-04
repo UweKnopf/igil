@@ -30,29 +30,26 @@ type Schema = z.output<typeof schema>
 
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  errorMessage.value = ""
+  errorMessage.value = ''
   loading.value = true
 
   try {
-    
-      const { data, error } = await authClient.organization.create({
-        name: payload.data.orgName, // required, The organization name.
-        slug: payload.data.orgSlug, // required, The organization slug.
-        keepCurrentActiveOrganization: false, // Whether to keep the current active organization active after creating a new one.
-    });
-
-      if (error) {
-        errorMessage.value = error.message ?? "Unable to sign in."
-        return
+    const response = await $fetch('/api/auth/organization', {
+      method: 'POST',
+      body: {
+        name: payload.data.orgName,
+        slug: payload.data.orgSlug
       }
-
-      await navigateTo("/orgDashboard") //Should be newly created org
-
-  } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : "Unexpected error. Please try again."
-
-  }
-  finally {
+    })
+    
+    // You could navigate using the returned organization slug or ID.
+    await navigateTo('/orgDashboard')
+  } catch (error: any) {
+    errorMessage.value =
+      error?.data?.statusMessage ??
+      error?.statusMessage ??
+      'Unable to create the organization. Please try again.'
+  } finally {
     loading.value = false
   }
 } 
