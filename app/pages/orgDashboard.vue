@@ -10,6 +10,45 @@ const organizations = authClient.useListOrganizations()
 const organizationRows = computed(() => [
   ...(organizations.value.data ?? [])
 ])
+
+const columns = [
+  {
+    accessorKey: 'name',
+    header: 'Organization'
+  },
+  {
+    accessorKey: 'slug',
+    header: 'Slug'
+  },
+  {
+    id: 'actions',
+    header: '',
+    meta: {
+      class: {
+        th: 'w-0 text-right',
+        td: 'text-right'
+      }
+    }
+  }
+]
+
+const setActiveOrganization = async (organization: {
+  id: string
+  slug: string
+}) => {
+  const { error } = await authClient.organization.setActive({
+    organizationId: organization.id
+  })
+
+  if (error) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: error.message
+    })
+  }
+
+  await navigateTo(`/organizations/${organization.slug}/dashboard`)
+}
 </script>
 
 <template>
@@ -41,7 +80,20 @@ const organizationRows = computed(() => [
         </div>
       </template>
 
-      <UTable :data="organizationRows">
+      <UTable :data="organizationRows" :columns="columns">
+
+        <template #actions-cell="{ row }">
+          <UButton
+            label="Open dashboard"
+            icon="i-lucide-layout-dashboard"
+            color="primary"
+            variant="soft"
+            size="sm"
+            @click="setActiveOrganization(row.original)"
+          />
+        </template>
+
+
         <template #empty>
           <div
             class="flex min-h-72 flex-col items-center justify-center gap-4 p-8 text-center"
