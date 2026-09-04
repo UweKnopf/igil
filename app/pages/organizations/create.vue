@@ -60,17 +60,45 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField label="Name" name="name">
-      <UInput v-model="state.orgName" />
-    </UFormField>
+  <div class="mx-auto w-full max-w-6xl p-4 sm:p-6">
+    <UCard
+      :ui="{
+        root: 'overflow-hidden',
+        header: 'border-b border-default px-6 py-5',
+        body: 'p-0',
+        footer: 'border-t border-default px-6 py-4'
+      }"
+    >
+      <template #header>
+        <h2 class="text-left text-xl font-semibold">
+          Create Organization
+        </h2>
+      </template>
 
-    <UFormField label="Slug" name="slug">
-      <UInput v-model="state.orgSlug" />
-    </UFormField>
+      <div class="p-6">
+        <UForm
+          :schema="schema"
+          :state="state"
+          class="flex min-h-72 flex-col items-center justify-center gap-4 p-8 text-center"
+          @submit="onSubmit"
+        >
+          <UFormField label="Name" name="name">
+            <UInput v-model="state.orgName" />
+          </UFormField>
 
-    <UButton type="submit">
-      Submit
-    </UButton>
-  </UForm>
+          <UFormField label="Slug" name="slug">
+            <UInput v-model="state.orgSlug" />
+          </UFormField>
+
+          <UButton
+            type="submit"
+            size="lg"
+            class="text-base justify-center"
+          >
+            Submit
+          </UButton>
+        </UForm>
+      </div>
+    </UCard>
+  </div>
 </template>
