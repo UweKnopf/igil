@@ -69,14 +69,10 @@ const setActiveOrganization = async (organization: {
 
 <template>
   <div class="mx-auto w-full max-w-6xl p-4 sm:p-6">
-<div
-      v-if="!mounted"
-      class="min-h-72 animate-pulse rounded-lg bg-elevated"
-    />
 
-    <UCard 
-    v-else
-    :ui="{
+    <div v-if="!mounted" class="min-h-72 animate-pulse rounded-lg bg-elevated" />
+
+    <UCard v-else :ui="{
       root: 'overflow-hidden',
       header: 'border-b border-default px-6 py-5',
       body: 'p-0',
