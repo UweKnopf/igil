@@ -8,7 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/fonts',
     '@nuxt/devtools',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    'nuxt-lettermint'
   ],
   css: ['~/assets/css/main.css'],
   hub: {
