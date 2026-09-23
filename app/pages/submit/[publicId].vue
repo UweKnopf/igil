@@ -4,6 +4,15 @@ import { useManuscriptUpload } from '~/composables/useManuscriptUpload';
 const route = useRoute();
 const publicId = route.params.publicId as string;
 
+const form = async () => {
+  const { data } = await useFetch(`/api/public/forms/:publicId/form`);
+  return data.value;
+};
+
+if (!form) {
+  throw new Error("Form not found");
+}
+
 const manuscriptFile = ref<File | null>(null);
 const uploadedManuscript = ref<{ uploadId: string } | null>(null);
 
