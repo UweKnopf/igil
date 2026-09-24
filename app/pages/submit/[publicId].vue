@@ -4,17 +4,30 @@ import { useManuscriptUpload } from '~/composables/useManuscriptUpload';
 const route = useRoute();
 const publicId = route.params.publicId as string;
 
-const form = async () => {
-  const { data } = await useFetch(`/api/public/forms/:publicId/form`);
-  return data.value;
-};
+const {
+  data,
+  status,
+  error: fetchError,
+} = await useFetch(
+  `/api/public/forms/${encodeURIComponent(publicId)}/form`,
+);
 
-if (!form) {
-  throw new Error("Form not found");
-}
+const form = computed(() => data.value?.form);
+
+const formErrorMessage = computed(() => {
+  switch (fetchError.value?.status) {
+    case 404:
+      return "This submission form could not be found.";
+    case 403:
+      return "This submission form is closed.";
+    default:
+      return "Unable to load this submission form. Please try again.";
+  }
+});
 
 const manuscriptFile = ref<File | null>(null);
 const uploadedManuscript = ref<{ uploadId: string } | null>(null);
+const localUploadError = ref<string | null>(null);
 
 const {
   isUploading,
@@ -24,43 +37,102 @@ const {
 
 function onFileSelected(event: Event) {
   const input = event.target as HTMLInputElement;
+
   manuscriptFile.value = input.files?.[0] ?? null;
+  uploadedManuscript.value = null;
+  localUploadError.value = null;
 }
 
 async function uploadSelectedFile() {
-  if (!manuscriptFile.value) return;
+  if (
+    !form.value ||
+    !manuscriptFile.value ||
+    isUploading.value
+  ) {
+    return;
+  }
 
-  uploadedManuscript.value = await uploadManuscript(
-    publicId,
-    manuscriptFile.value,
-  );
+  uploadedManuscript.value = null;
+  localUploadError.value = null;
+
+  try {
+    uploadedManuscript.value = await uploadManuscript(
+      publicId,
+      manuscriptFile.value,
+    );
+  } catch {
+    localUploadError.value = "Upload failed. Please try again.";
+  }
 }
 </script>
 
 <template>
-  div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Submit Manuscript</h1>
-  <div>
-    <input
-      type="file"
-      accept=".pdf,.docx,.rtf,.txt,application/pdf,application/rtf,text/plain"
-      @change="onFileSelected"
-    />
-
-    <button
-      type="button"
-      :disabled="!manuscriptFile || isUploading"
-      @click="uploadSelectedFile"
-    >
-      {{ isUploading ? "Uploading…" : "Upload manuscript" }}
-    </button>
-
-    <p v-if="uploadError" class="text-red-600">
-      {{ uploadError }}
+  <main class="mx-auto max-w-2xl p-6">
+    <p v-if="status === 'pending'" role="status">
+      Loading submission form…
     </p>
 
-    <p v-if="uploadedManuscript">
-      Manuscript uploaded successfully.
+    <div v-else-if="fetchError" role="alert" class="text-red-600">
+      {{ formErrorMessage }}
+    </div>
+
+    <section v-else-if="form" class="space-y-6">
+      <header>
+        <h1 class="text-2xl font-bold">
+          Submit Manuscript
+        </h1>
+
+        <p class="mt-2 text-gray-600">
+          Choose your manuscript below to upload it.
+        </p>
+      </header>
+
+      <form class="space-y-4" @submit.prevent="uploadSelectedFile">
+        <div>
+          <label
+            for="manuscript"
+            class="mb-2 block font-medium"
+          >
+            Manuscript
+          </label>
+
+          <input
+            id="manuscript"
+            type="file"
+            accept=".pdf,.docx,.rtf,.txt"
+            :disabled="isUploading"
+            @change="onFileSelected"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+          :disabled="!manuscriptFile || isUploading"
+        >
+          {{ isUploading ? "Uploading…" : "Upload manuscript" }}
+        </button>
+
+        <p
+          v-if="localUploadError || uploadError"
+          role="alert"
+          class="text-red-600"
+        >
+          {{ localUploadError || uploadError }}
+        </p>
+
+        <p
+          v-if="uploadedManuscript"
+          role="status"
+          class="text-green-700"
+        >
+          Manuscript uploaded successfully.
+        </p>
+      </form>
+    </section>
+
+    <p v-else>
+      Submission form is unavailable.
     </p>
-  </div>
+  </main>
 </template>
