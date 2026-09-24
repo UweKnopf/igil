@@ -22,7 +22,7 @@ definePageMeta({
     </template>
 
     <template #body>
-      <Placeholder class="h-full" />
+      <FormsTable />
     </template>
   </UDashboardPanel>
 </template>
