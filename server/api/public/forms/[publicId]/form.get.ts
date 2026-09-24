@@ -1,14 +1,9 @@
-import { randomUUID } from "node:crypto";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 import { db } from "~~/db";
 import {
   submissionForms,
 } from "~~/auth_schema";
-import { getS3Client } from "~~/server/utils/s3";
-
 
 export default defineEventHandler(async (event) => {
   const publicId = getRouterParam(event, "publicId");
