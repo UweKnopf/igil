@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import AddFormsModal from '~/components/forms/AddFormsModal.vue';
+definePageMeta({
+  middleware: 'auth',
+  layout: 'organization'
+})
 
 </script>
 
