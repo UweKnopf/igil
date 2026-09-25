@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
     maxFileSizeBytes: 5000000, 
     fields: body.costumFields,
     acceptedMimeTypes: body.acceptedMimeTypes,
-    publicId: orgSlug
+    //publicId: 
   })
   return result
 })

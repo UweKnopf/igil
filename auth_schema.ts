@@ -203,7 +203,7 @@ export const submissionForms = pgTable("submissionForms",
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
 
-    publicId: text("public_id").notNull(),
+    publicId: uuid("public_id").defaultRandom(), //used for accessing the public submission form page via url
     title: text("title").notNull(),
     description: text("description"),
     isOpen: boolean("is_open").notNull().default(false),
