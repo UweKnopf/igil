@@ -250,6 +250,7 @@ export const submissions = pgTable("submissions", {
   status: text("status").notNull().default("received"),
   // received | in_review | accepted | declined | withdrawn
 
+  //default fields for the submitter
   submitterName: text("submitter_name").notNull(),
   submitterEmail: text("submitter_email").notNull(),
 
