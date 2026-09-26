@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import { NuxtLink } from '#components'
+import { SquareArrowOutUpRight } from '@lucide/vue';
 
 const route = useRoute()
 const orgId = route.params.slug as string
-const mounted = ref(false)
 const UBadge = resolveComponent('UBadge')
 
 
 const {
   data,
-  status,
-  error: fetchError,
+  //status,
+  //error: fetchError,
 } = await useFetch(`/api/auth/${encodeURIComponent(orgId)}/forms`)
 
 const forms = computed(() => data.value ?? [])
@@ -68,6 +69,21 @@ const columns: TableColumn<FormRow>[] = [
       return `${openDate} - ${closeDate}`
     },
   },
+  {
+    id: 'link',
+    header: 'Link',
+    cell: ({ row }) => {
+      const publicId = row.original.publicId
+      return h(
+        NuxtLink,
+        {
+          to: `/submit/${publicId}`,
+          class: 'text-primary hover:underline'
+        },
+        () => h(SquareArrowOutUpRight, { class: 'size-5' })
+      )
+  },
+},
   
   {
     id: 'actions',
