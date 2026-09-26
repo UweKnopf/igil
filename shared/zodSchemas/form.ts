@@ -39,3 +39,13 @@ export const createFormSchema = z.object({
 })
 
 export type CreateFormBody = z.infer<typeof createFormSchema>
+
+//The form body used on the client side (minimal example)
+export const FormSchema = z.object({
+  submittedAuthorAuthorName: z.string().trim().min(1, 'Author name is required').max(100),
+  submittedAuthorEmail: z.email(),
+  //uploadId: z.string(), will be stored externally outside the form
+
+})
+
+export type FormBody = z.infer<typeof FormSchema>

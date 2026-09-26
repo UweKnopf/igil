@@ -13,12 +13,12 @@ import {
   submissions,
 } from "~~/auth_schema";
 import { getS3Client } from "~~/server/utils/s3";
-
+//TODO: use zod to validate the request body
 type SubmissionBody = {
   name: string;
   email: string;
   answers?: Record<string, unknown>;
-  uploadIds: string[];
+  uploadId: string;
 };
 
 export default defineEventHandler(async (event) => {
@@ -27,11 +27,11 @@ export default defineEventHandler(async (event) => {
 
   if (
     !publicId ||
-    !body ||
+    !body || 
+    typeof body.uploadId !== "string" ||
     typeof body.name !== "string" ||
-    typeof body.email !== "string" ||
-    !Array.isArray(body.uploadIds) ||
-    body.uploadIds.length !== 1
+    typeof body.email !== "string" 
+    
   ) {
     throw createError({
       statusCode: 400,
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     .from(pendingSubmissionUploads)
     .where(
       and(
-        eq(pendingSubmissionUploads.id, body.uploadIds[0]!),
+        eq(pendingSubmissionUploads.id, body.uploadId!),
         eq(pendingSubmissionUploads.formId, form.id),
         isNull(pendingSubmissionUploads.consumedAt),
         gt(pendingSubmissionUploads.expiresAt, new Date()),
