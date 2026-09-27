@@ -27,7 +27,7 @@ const navigation = computed(() => [
   {
     label: 'Submissions',
     icon: 'i-lucide-feather',
-    to: `${dashboardPath.value}/members`
+    to: `${dashboardPath.value}/submissions`
   },
   {
     label: 'Invitations',
