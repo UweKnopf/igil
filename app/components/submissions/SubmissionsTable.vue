@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtLink } from '#components'
+import { SquareArrowOutUpRight } from '@lucide/vue'
 import type { TableColumn } from '@nuxt/ui'
 
 const route = useRoute()
@@ -33,6 +35,21 @@ const columns: TableColumn<SubmissionRow>[] = [
     {
         accessorKey: 'status',
         header: 'Status',},
+    {
+    id: 'link',
+    header: 'Link',
+    cell: ({ row }) => {
+      const submissionId = row.original.id
+      return h(
+        NuxtLink,
+        {
+          to: `/organizations/${orgId}/submissions/${submissionId}`,
+          class: 'text-primary hover:underline'
+        },
+        () => h(SquareArrowOutUpRight, { class: 'size-5' })
+      )
+  },
+},
   
   {
     id: 'actions',

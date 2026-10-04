@@ -13,6 +13,7 @@ export const auth = betterAuth({
           return subscription.plan === "pro"; 
       },
     }*/
+   /*
    {
     async sendInvitationEmail(data) {
       const inviteLink = `https://example.com/accept-invitation/${data.id}`;
@@ -25,6 +26,7 @@ export const auth = betterAuth({
         });
     }
    }
+   */
    ) 
     ],
     emailAndPassword: { 
