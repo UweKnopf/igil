@@ -3,6 +3,7 @@ import { db } from "~~/db";
 import { and, eq } from 'drizzle-orm';
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createError, defineEventHandler, getRouterParam } from 'h3'
 
 
 
