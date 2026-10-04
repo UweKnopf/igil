@@ -1,0 +1,1 @@
+ALTER TABLE "submission_files" ADD COLUMN "editor_key" uuid DEFAULT gen_random_uuid() NOT NULL;

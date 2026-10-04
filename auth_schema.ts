@@ -283,6 +283,8 @@ export const submissionFiles = pgTable("submission_files", {
   uploadStatus: text("upload_status").notNull().default("pending"),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+
+  editorKey: uuid("editor_key").defaultRandom().notNull(),
 });
 
 //For keeping the references between file upload and form submission

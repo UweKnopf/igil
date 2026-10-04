@@ -3,6 +3,7 @@ import { db } from "~~/db";
 import { and, eq } from 'drizzle-orm';
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import jwt from "jsonwebtoken";
 
 
 
@@ -104,24 +105,96 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    const runtimeConfig = useRuntimeConfig(event);
+    setResponseHeader(event, "Cache-Control", "no-store");
+    const jwtSecret = runtimeConfig.onlyofficeJwtSecret;
+    const appBaseUrl = runtimeConfig.appBaseUrl;
+
+    const filename = submissionFile.originalFilename || "submission_file";
+
+    const typeByMime: Record<string, string> = {
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "docx",
+  "application/msword": "doc",
+  "application/pdf": "pdf",
+};
+
+const extension = filename.split(".").pop()?.toLowerCase();
+const fileType = typeByMime[submissionFile.mimeType] || extension;
+const isPdf = fileType === "pdf";
+if (!fileType || !["docx", "doc", "pdf"].includes(fileType)) {
+  throw createError({
+    statusCode: 415,
+    statusMessage: "Unsupported document type",
+  });
+}
+
     const s3 = getS3Client();
     
-      const command = new GetObjectCommand({
-        Bucket: submissionFile.bucket,
-        Key: submissionFile.objectKey,
-      });
-      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-      const downloadUrl = await getSignedUrl(s3, command, {
-        expiresIn: 60 * 5, // 5 minutes
-      });
+    const command = new GetObjectCommand({
+    Bucket: submissionFile.bucket,
+    Key: submissionFile.objectKey,
+    });
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    const downloadUrl = await getSignedUrl(s3, command, {
+    expiresIn: 60 * 5, // 5 minutes
+    });
+
+    const callbackUrl = new URL(
+    "/api/onlyoffice/callback",
+    appBaseUrl,
+    ).toString();
+
+const editorConfig = {
+  documentType: isPdf ? "pdf" : "word",
+  type: "desktop",
+  width: "100%",
+  height: "100%",
+    document: {
+    fileType,
+    key: submissionFile.editorKey,
+    title: filename,
+    url: downloadUrl,
+
+    permissions: {
+      // Full editing + comments in this example.
+      edit: true,
+      comment: true,
+
+      // Word review tools are not the PDF annotation workflow.
+      review: !isPdf,
+
+      editCommentAuthorOnly: true,
+      deleteCommentAuthorOnly: true,
+    },
+  },
+
+  editorConfig: {
+    mode: "edit",
+    callbackUrl,
+
+    user: {
+      id: String(session.user.id),
+      name: session.user.name || "Reviewer",
+    },
+
+    customization: {
+      forcesave: true,
+    },
+  },
+};
+
+const token = jwt.sign(editorConfig, jwtSecret, {
+  algorithm: "HS256",
+});
 
   return {
-    downloadUrl,
-    expiresAt: expiresAt.toISOString(),
-
-    headers: {
-      "Content-Type": submissionFile.mimeType,
-    },
-  };
+  documentServerUrl: runtimeConfig.public.onlyofficeUrl,
+  expiresAt: expiresAt.toISOString(),
+  config: {
+    ...editorConfig,
+    token,
+  },
+};
 })
 

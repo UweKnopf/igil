@@ -24,6 +24,7 @@
     "@nuxt/ui": "^4.11.0",
     "@nuxthub/core": "^0.10.8",
     "@nuxtjs/seo": "^5.3.14",
+    "@onlyoffice/document-editor-vue": "^1.6.1",
     "@takumi-rs/core": "^2.13.3",
     "@takumi-rs/wasm": "^2.13.7",
     "@tiptap/core": "^3.30.5",
@@ -47,6 +48,7 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^1.0.0-rc.5-ab785fc",
     "eslint": "^10.9.1",
+    "jsonwebtoken": "^9.0.3",
     "nuxt": "^4.5.2",
     "nuxt-lettermint": "^2.0.0",
     "pg": "^8.23.0",
@@ -58,6 +60,7 @@
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.4.0",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^1.0.0-rc.5-ab785fc",
